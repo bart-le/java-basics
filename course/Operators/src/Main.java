@@ -35,5 +35,11 @@ public class Main {
 
 		result /= 4;
 		System.out.println("20 / 4 = " + result);
+
+		boolean isHealthy = false;
+		if (isHealthy == false) {
+			System.out.println("Hold in isolation.");
+			System.out.println("Give medication.");
+		}
 	}
 }
