@@ -19,5 +19,15 @@ public class Main {
 
 		System.out.println("Busted MIN_VALUE value: " + (myMinIntValue - 1));
 		System.out.println("Busted MAX_VALUE value: " + (myMaxIntValue + 1));
+
+		long myLongValue = 100L;
+
+		long myMinLongValue = Long.MIN_VALUE;
+		long myMaxLongValue = Long.MAX_VALUE;
+		System.out.println("Long minimum value: " + myMinLongValue);
+		System.out.println("Long maximum value: " + myMaxLongValue);
+
+		long bigLongLiteralValue = 2_147_483_6470L;
+		System.out.println(bigLongLiteralValue);
 	}
 }
