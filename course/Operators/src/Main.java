@@ -65,5 +65,11 @@ public class Main {
 		if (!isFalse) {
 			System.out.println("This is not supposed to happen.");
 		}
+
+		isFalse = true;
+		boolean wasFalse = isFalse ? true : false;
+		if (wasFalse) {
+			System.out.println("wasFalse is true.");
+		}
 	}
 }
