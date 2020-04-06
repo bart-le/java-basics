@@ -6,5 +6,8 @@ public class Main {
 		int myMaxIntValue = Integer.MAX_VALUE;
 		System.out.println("Integer minimum value: " + myMinIntValue);
 		System.out.println("Integer maximum value: " + myMaxIntValue);
+
+		System.out.println("Busted MIN_VALUE value: " + (myMinIntValue - 1));
+		System.out.println("Busted MAX_VALUE value: " + (myMaxIntValue + 1));
 	}
 }
