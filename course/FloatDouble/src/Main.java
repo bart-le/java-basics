@@ -9,5 +9,12 @@ public class Main {
 		double myMaxDoubleValue = Double.MAX_VALUE;
 		System.out.println("Double minimum value: " + myMinDoubleValue);
 		System.out.println("Double maximum value: " + myMaxDoubleValue);
+
+		int myIntValue = 5 / 3;
+		float myFloatValue = 5f / 3f;
+		double myDoubleValue = 5.00 / 3d;
+		System.out.println("Int value: " + myIntValue);
+		System.out.println("Float value: " + myFloatValue);
+		System.out.println("Double value: " + myDoubleValue);
 	}
 }
