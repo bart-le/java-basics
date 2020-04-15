@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Theatre {
@@ -21,26 +22,15 @@ public class Theatre {
 	}
 
 	public boolean reserveSeat(String seatNumber) {
-		int low = 0;
-		int high = seats.size() - 1;
+		Seat requestedSeat = new Seat(seatNumber);
+		int foundSeat = Collections.binarySearch(seats, requestedSeat, null);
 
-		while (low <= high) {
-			System.out.print("- ");
-			int mid = (low + high) / 2;
-			Seat midValue = seats.get(mid);
-			int comparison = midValue.getSeatNumber().compareTo(seatNumber);
-
-			if (comparison < 0) {
-				low = mid + 1;
-			} else if (comparison > 0) {
-				high = mid - 1;
-			} else {
-				return seats.get(mid).reserve();
-			}
+		if (foundSeat >= 0) {
+			return seats.get(foundSeat).reserve();
+		} else {
+			System.out.println("There is no seat " + seatNumber);
+			return false;
 		}
-
-		System.out.println("There is no seat " + seatNumber);
-		return false;
 	}
 
 	public void getSeats() {
