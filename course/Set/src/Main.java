@@ -93,5 +93,9 @@ public class Main {
 		planets.add(pluto);
 		for (CelestialObject planet : planets)
 			System.out.println(planet.getName() + ": " + planet.getOrbitalPeriod());
+
+		Object o = new Object();
+		o.equals(o);
+		"pluto".equals("");
 	}
 }
