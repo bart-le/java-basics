@@ -8,27 +8,10 @@ import java.util.Set;
 public class Locations implements Map<Integer, Location> {
 	private static Map<Integer, Location> locations = new HashMap<>();
 
-	public static void main(String[] args) {
-		FileWriter locFile = null;
-
-		try {
-			locFile = new FileWriter("locations.txt");
-
-			for (Location location : locations.values())
+	public static void main(String[] args) throws IOException {
+		try (FileWriter locFile = new FileWriter("locations.txt")) {
+			for (Location location : locations.values()) {
 				locFile.write(location.getLocationId() + "," + location.getDescription() + "\n");
-		} catch (IOException e) {
-			System.out.println("Catch block");
-			e.printStackTrace();
-		} finally {
-			System.out.println("Finally block");
-
-			try {
-				if (locFile != null) {
-					System.out.println("locFile.close() attempt");
-					locFile.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 	}
