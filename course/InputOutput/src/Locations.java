@@ -1,14 +1,15 @@
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 
 public class Locations implements Map<Integer, Location> {
@@ -33,32 +34,27 @@ public class Locations implements Map<Integer, Location> {
 	}
 
 	static {
-		try (Scanner scanner = new Scanner(new BufferedReader(new FileReader("locations_big.txt")))) {
-			scanner.useDelimiter(",");
+		try (DataInputStream locFile = new DataInputStream(new BufferedInputStream(new FileInputStream("locations.dat")))) {
+			boolean eof = false;
 
-			while (scanner.hasNextLine()) {
-				int loc = scanner.nextInt();
-				scanner.skip(scanner.delimiter());
-				String description = scanner.nextLine();
-				System.out.println("Imported loc -> " + loc + ": " + description);
-				Map<String, Integer> tempExit = new LinkedHashMap<>();
-				locations.put(loc, new Location(loc, description, tempExit));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try (BufferedReader dirFile = new BufferedReader(new FileReader("directions_big.txt"))) {
-			String input;
-
-			while ((input = dirFile.readLine()) != null) {
-				String[] data = input.split(",");
-				int loc = Integer.parseInt(data[0]);
-				String direction = data[1];
-				int destination = Integer.parseInt(data[2]);
-				System.out.println(loc + " -> " + direction + ": " + destination);
-				Location location = locations.get(loc);
-				location.addExit(direction, destination);
+			while (!eof) {
+				try {
+					Map<String, Integer> exits = new LinkedHashMap<>();
+					int locId = locFile.readInt();
+					String description = locFile.readUTF();
+					int numExits = locFile.readInt();
+					System.out.println("Read location " + locId + ": " + description);
+					System.out.println("Found " + numExits + " exits");
+					for (int i = 0; i < numExits; i++) {
+						String direction = locFile.readUTF();
+						int destination = locFile.readInt();
+						exits.put(direction, destination);
+						System.out.println("\t" + direction + "," + destination);
+					}
+					locations.put(locId, new Location(locId, description, exits));
+				} catch (EOFException e) {
+					eof = true;
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
