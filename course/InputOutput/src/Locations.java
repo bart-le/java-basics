@@ -1,14 +1,14 @@
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,48 +16,33 @@ public class Locations implements Map<Integer, Location> {
 	private static Map<Integer, Location> locations = new HashMap<>();
 
 	public static void main(String[] args) throws IOException {
-		try (DataOutputStream locFile = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("locations.dat")))) {
+		try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream("locations.dat")))) {
 			for (Location location : locations.values()) {
-				locFile.writeInt(location.getLocationId());
-				locFile.writeUTF(location.getDescription());
-				System.out.println("Writing location " + location.getLocationId() + ": " + location.getDescription());
-				System.out.println("Writing " + (location.getExits().size() - 1) + " exits");
-				locFile.writeInt(location.getExits().size() - 1);
-				for (String direction : location.getExits().keySet())
-					if (!direction.equalsIgnoreCase("Q")) {
-						System.out.println("\t" + direction + "," + location.getExits().get(direction));
-						locFile.writeUTF(direction);
-						locFile.writeInt(location.getExits().get(direction));
-					}
+				locFile.writeObject(location);
 			}
 		}
 	}
 
 	static {
-		try (DataInputStream locFile = new DataInputStream(new BufferedInputStream(new FileInputStream("locations.dat")))) {
+		try (ObjectInputStream locFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream("locations.dat")))) {
 			boolean eof = false;
 
 			while (!eof) {
 				try {
-					Map<String, Integer> exits = new LinkedHashMap<>();
-					int locId = locFile.readInt();
-					String description = locFile.readUTF();
-					int numExits = locFile.readInt();
-					System.out.println("Read location " + locId + ": " + description);
-					System.out.println("Found " + numExits + " exits");
-					for (int i = 0; i < numExits; i++) {
-						String direction = locFile.readUTF();
-						int destination = locFile.readInt();
-						exits.put(direction, destination);
-						System.out.println("\t" + direction + "," + destination);
-					}
-					locations.put(locId, new Location(locId, description, exits));
+					Location location = (Location) locFile.readObject();
+					System.out.println("Read location " + location.getLocationId() + ": " + location.getDescription());
+					System.out.println("Found " + location.getExits().size() + " exits");
+					locations.put(location.getLocationId(), location);
 				} catch (EOFException e) {
 					eof = true;
 				}
 			}
+		} catch (InvalidClassException e) {
+			System.out.println("InvalidClassException: " + e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("IOException: " + e.getMessage());
+		} catch (ClassNotFoundException e) {
+			System.out.println("ClassNotFoundException: " + e.getMessage());
 		}
 	}
 
